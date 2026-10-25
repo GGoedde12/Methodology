@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Soccer Stadium VR</title>
+  <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
+
+<script>
+  AFRAME.registerComponent('player-collision', {
+    schema: {
+      radius: {default: 0.5}
+    },
+
+    init: function () {
+      this.previousPosition = new THREE.Vector3();
+      this.el.object3D.getWorldPosition(this.previousPosition);
+    },
+
+    tick: function () {
+      const player = this.el.object3D;
+      const current = new THREE.Vector3();
+
+      player.getWorldPosition(current);
+
+      const barriers = document.querySelectorAll('.collidable');
+      let blocked = false;
+
+      barriers.forEach(barrier => {
+        const box = new THREE.Box3().setFromObject(barrier.object3D);
+
+        // Expand collision area for player width
+        box.expandByScalar(this.data.radius);
+
+        if (
+          current.x >= box.min.x &&
+          current.x <= box.max.x &&
+          current.z >= box.min.z &&
+          current.z <= box.max.z &&
+          current.y >= box.min.y &&
+          current.y <= box.max.y
+        ) {
+          blocked = true;
+        }
+      });
+
+      if (blocked) {
+        player.position.copy(this.previousPosition);
+      } else {
+        this.previousPosition.copy(current);
+      }
+    }
+  });
+</script>
+
+</head>
+<body>
+
+<a-scene background="color: #87CEEB">
+
+  <a-sky src="#skyTexture"></a-sky>
+
+  <a-plane
+  position="0 -0.1 0"
+  rotation="-90 0 0"
+  width="200"
+  height="200"
+  material="src: #concreteTexture; repeat: 25 25">
+</a-plane>
+  </a-plane>
+
+  <a-plane
+  position="0 0 0"
+  rotation="-90 0 0"
+  width="60"
+  height="100"
+  material="src: #grassTexture; repeat: 12 20">
+</a-plane>
+  </a-plane>
+
+  <a-plane position="0 0.01 -40"
+    rotation="-90 0 0" width="60" height="20"
+    color="#2E9E2E"></a-plane>
+
+  <a-plane position="0 0.01 0"
+    rotation="-90 0 0" width="60" height="20"
+    color="#2E9E2E"></a-plane>
+
+  <a-plane position="0 0.01 40"
+    rotation="-90 0 0" width="60" height="20"
+    color="#2E9E2E"></a-plane>
+
+  <a-box position="0 0.05 -50"
+    width="60" height="0.1" depth="0.2"
+    color="white"></a-box>
+
+  <a-box position="0 0.05 50"
+    width="60" height="0.1" depth="0.2"
+    color="white"></a-box>
+
+  <a-box position="-30 0.05 0"
+    width="0.2" height="0.1" depth="100"
+    color="white"></a-box>
+
+  <a-box position="30 0.05 0"
+    width="0.2" height="0.1" depth="100"
+    color="white"></a-box>
+
+  <a-box position="0 0.05 0"
+    width="60" height="0.1" depth="0.2"
+    color="white"></a-box>
+
+  <a-ring
+    position="0 0.07 0"
+    rotation="-90 0 0"
+    radius-inner="9.8"
+    radius-outer="10"
+    color="white">
+  </a-ring>
+
+  <a-circle
+    position="0 0.08 0"
+    rotation="-90 0 0"
+    radius="0.4"
+    color="white">
+  </a-circle>
+
+  <a-box position="0 0.06 -34"
+    width="40" height="0.1" depth="0.2"
+    color="white"></a-box>
+
+  <a-box position="-20 0.06 -42"
+    width="0.2" height="0.1" depth="16"
+    color="white"></a-box>
+
+  <a-box position="20 0.06 -42"
+    width="0.2" height="0.1" depth="16"
+    color="white"></a-box>
+
+  <a-box position="0 0.06 34"
+    width="40" height="0.1" depth="0.2"
+    color="white"></a-box>
+
+  <a-box position="-20 0.06 42"
+    width="0.2" height="0.1" depth="16"
+    color="white"></a-box>
+
+  <a-box position="20 0.06 42"
+    width="0.2" height="0.1" depth="16"
+    color="white"></a-box>
+
+  <a-box position="-4 2 -50"
+    width="0.25" height="4" depth="0.25"
+    color="white"></a-box>
+
+  <a-box position="4 2 -50"
+    width="0.25" height="4" depth="0.25"
+    color="white"></a-box>
+
+  <a-box position="0 4 -50"
+    width="8.25" height="0.25" depth="0.25"
+    color="white"></a-box>
+
+  <a-box position="0 2 -53"
+    width="8" height="4" depth="0.05"
+    material="color: white; opacity: 0.25; transparent: true">
+  </a-box>
+
+  <a-box position="-4 2 50"
+    width="0.25" height="4" depth="0.25"
+    color="white"></a-box>
+
+  <a-box position="4 2 50"
+    width="0.25" height="4" depth="0.25"
+    color="white"></a-box>
+
+  <a-box position="0 4 50"
+    width="8.25" height="0.25" depth="0.25"
+    color="white"></a-box>
+
+  <a-box position="0 2 53"
+    width="8" height="4" depth="0.05"
+    material="color: white; opacity: 0.25; transparent: true">
+  </a-box>
+
+  <a-box position="-39 2 0"
+    width="12" height="4" depth="115"
+    color="#2448A5"></a-box>
+
+  <a-box position="-45 6 0"
+    width="12" height="4" depth="115"
+    color="#3366CC"></a-box>
+
+  <a-box position="-51 10 0"
+    width="12" height="4" depth="115"
+    color="#2448A5"></a-box>
+
+  <a-box position="39 2 0"
+    width="12" height="4" depth="115"
+    color="#CC3333"></a-box>
+
+  <a-box position="45 6 0"
+    width="12" height="4" depth="115"
+    color="#E04444"></a-box>
+
+  <a-box position="51 10 0"
+    width="12" height="4" depth="115"
+    color="#CC3333"></a-box>
+
+  <a-box position="0 3 -65"
+    width="85" height="6" depth="12"
+    color="#3366CC"></a-box>
+
+  <a-box position="0 3 65"
+    width="85" height="6" depth="12"
+    color="#CC3333"></a-box>
+
+  <a-cylinder position="-55 20 -60"
+    radius="0.6" height="40"
+    color="#777777"></a-cylinder>
+
+  <a-cylinder position="55 20 -60"
+    radius="0.6" height="40"
+    color="#777777"></a-cylinder>
+
+  <a-cylinder position="-55 20 60"
+    radius="0.6" height="40"
+    color="#777777"></a-cylinder>
+
+  <a-cylinder position="55 20 60"
+    radius="0.6" height="40"
+    color="#777777"></a-cylinder>
+
+  <a-box position="-55 40 -60"
+    width="10" height="3" depth="2"
+    color="#FFFFFF"
+    material="emissive: #FFFFFF; emissiveIntensity: 0.6">
+  </a-box>
+
+  <a-box position="55 40 -60"
+    width="10" height="3" depth="2"
+    color="#FFFFFF"
+    material="emissive: #FFFFFF; emissiveIntensity: 0.6">
+  </a-box>
+
+  <a-box position="-55 40 60"
+    width="10" height="3" depth="2"
+    color="#FFFFFF"
+    material="emissive: #FFFFFF; emissiveIntensity: 0.6">
+  </a-box>
+
+  <a-box position="55 40 60"
+    width="10" height="3" depth="2"
+    color="#FFFFFF"
+    material="emissive: #FFFFFF; emissiveIntensity: 0.6">
+  </a-box>
+
+  <a-box position="0 20 -73"
+    width="25" height="10" depth="1"
+    color="#111111"></a-box>
+
+  <a-text
+    value="HOME  0 - 0  AWAY"
+    position="0 21 -72.4"
+    align="center"
+    width="23"
+    color="#FFFFFF">
+  </a-text>
+
+  <a-text
+    value="SOCCER STADIUM"
+    position="0 17.5 -72.4"
+    align="center"
+    width="20"
+    color="#FFFF00">
+  </a-text>
+
+  <a-sphere
+    position="-80 85 -100"
+    radius="10"
+    color="#FFFF88"
+    material="emissive: #FFFF55; emissiveIntensity: 0.8">
+  </a-sphere>
+
+  <a-light
+    type="ambient"
+    color="#FFFFFF"
+    intensity="0.7">
+  </a-light>
+
+  <a-light
+    type="directional"
+    position="-30 50 20"
+    intensity="0.9"
+    color="#FFFFFF">
+  </a-light>
+
+  <a-entity
+  id="player"
+  position="0 1.6 20"
+  camera
+  look-controls
+  wasd-controls="acceleration: 35"
+  player-collision="radius: 0.5">
+  </a-entity>
+  
+<a-assets>
+
+  <a-asset-item
+    id="soccerBall"
+    src="models/soccer-ball.glb">
+  </a-asset-item>
+
+  <a-asset-item
+    id="soccerGoal"
+    src="models/soccer-goal.glb">
+  </a-asset-item>
+
+  <a-asset-item
+    id="tree"
+    src="models/tree.glb">
+  </a-asset-item>
+
+  <a-asset-item
+    id="bench"
+    src="models/bench.glb">
+  </a-asset-item>
+
+  <a-asset-item
+    id="treeTwo"
+    src="models/tree-two.glb">
+  </a-asset-item>
+
+<!-- STADIUM TEXTURES -->
+<img id="grassTexture" src="textures/grass.jpg">
+<img id="concreteTexture" src="textures/concrete.jpg">
+<img id="metalTexture" src="textures/metal.jpg">
+<img id="skyTexture" src="textures/sky.jpg">
+</a-assets>
+
+
+
+
+<!-- SOCCER BALL -->
+<a-entity
+  id="soccerBallTest"wa
+  gltf-model="url(models/soccer-ball.glb)"
+  position="0 0.5 0"
+  scale="0.1 0.1 0.1">
+</a-entity>
+
+
+
+
+
+<!-- SOCCER GOAL -->
+<a-entity
+  gltf-model="#soccerGoal"
+  position="0 0 -50"
+  scale="2 2 2">
+</a-entity>
+
+<!-- TREE -->
+<a-entity
+  gltf-model="#tree"
+  position="-65 0 -45"
+  scale="3 3 3">
+</a-entity>
+
+<!-- BENCH -->
+<a-entity
+  gltf-model="#bench"
+  position="25 0 15"
+  rotation="0 90 0"
+  scale="6 6 6">
+</a-entity>
+</a-entity>
+
+<!-- SECOND TREE -->
+<a-entity
+  gltf-model="#treeTwo"
+  position="65 0 45"
+  scale="3 3 3">
+</a-entity>
+<!-- COLLIDABLE LEFT BARRIER -->
+<a-box
+  class="collidable"
+  position="-31 1 0"
+  width="1"
+  height="2"
+  depth="100"
+  material="src: #metalTexture; repeat: 1 15">
+</a-box>
+
+<!-- COLLIDABLE RIGHT BARRIER -->
+<a-box
+  class="collidable"
+  position="31 1 0"
+  width="1"
+  height="2"
+  depth="100"
+  material="src: #metalTexture; repeat: 1 15">
+</a-box>
+</a-scene>
+
+</body>
+</html>
